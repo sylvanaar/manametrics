@@ -1,0 +1,11 @@
+﻿## Interface: 30100
+
+## RequiredDeps: Ace3
+
+LibDataBroker-1.1\LibDataBroker-1.1.lua
+LibDBIcon-1.0\LibDBIcon-1.0.lua
+LibQTip-1.0\LibQTip-1.0.lua
+
+
+ManaMetrics.xml
+ManaMetrics.lua
