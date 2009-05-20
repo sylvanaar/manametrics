@@ -1,11 +1,22 @@
 ﻿## Interface: 30100
+## Author: Sylvanaar
+## Notes: Experiments in Mana/Regen Tracking
 
 ## RequiredDeps: Ace3
 
-LibDataBroker-1.1\LibDataBroker-1.1.lua
-LibDBIcon-1.0\LibDBIcon-1.0.lua
-LibQTip-1.0\LibQTip-1.0.lua
+## OptionalDeps: LibStub, LibQTip-1.0
+## Version: @project-version@ 
 
+## X-Embeds: LibStub, LibQTip-1.0
 
+#@no-lib-strip@
+# Libraries
+embeds.xml
+#@end-no-lib-strip@
+
+# Localization files
+#locale.xml
+
+# Addon Files
 ManaMetrics.xml
 ManaMetrics.lua
