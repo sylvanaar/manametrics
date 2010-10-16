@@ -1,4 +1,4 @@
-﻿## Interface: 30300
+﻿## Interface: 40000
 ## Author: Sylvanaar
 ## Notes: Experiments in Mana/Regen Tracking
 

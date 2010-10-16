@@ -160,7 +160,7 @@ end
 
 
 
-MANA_CHAT_FRAME = ChatFrame7
+MANA_CHAT_FRAME = ChatFrame3
 function mana:log(text)
     MANA_CHAT_FRAME:AddMessage(text)
 end
