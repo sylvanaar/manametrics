@@ -93,6 +93,16 @@ local combatEvents = {
 	"PLAYER_REGEN_ENABLED",
 }
 
+
+local function Color(c, t) return "|cff"..c..t.."|r" end
+local function HGreen(t) return Color("80ff80", t) end
+local function HYellow(t) return Color("ffffa0", t) end
+local function Green(t) return Color("80ff80", t) end
+local function Blue(t) return Color("8080ff", t) end
+local function Red(t) return Color("ff8080", t) end
+local function White(t) return Color("ffffff", t) end
+local function WhiteParens(t) return "|cffffffff(|r"..t.."|cffffffff)|r" end
+
 local FMT_SPELL = "%s -|cffff8080%d|r mana (-|cffff8080%d|r regen)"
 local FMT_ENERGIZE = "%s +|cff80ff80%d|r mana "
 local FMT_REGEN = "Regen +|cff80ff80%.0f|r mana "
@@ -247,6 +257,7 @@ function mana:takeSample(data, elapsed)
         data.manaregen = data.mana - data.manalog[oldtime] + (data.manaspent or 0)
 
         if data.manalog[oldtime] == data.manamax and deficit > 0 then
+            self:log(Blue("----------------------------------------------------"))
             self:log("Regen Start")
             data.regen = true
         end
@@ -295,6 +306,7 @@ function mana:takeSample(data, elapsed)
         data.managenlog = { [data.timestamp] = 0 }
         sma = 0
         self:log("Regen End - Full Mana")
+        self:log(Blue("----------------------------------------------------"))
         data.regen = nil
     end
     manaLDB.text = data.mana .. "/" .. data.manamax .. "  " .. sma .." mp/s " .. format("%.2f", mana.FSR and mana.FSR or "0") .. " sec"
@@ -430,14 +442,7 @@ local LABEL_LF = { LABEL_NONE, LABEL_MANA, LABEL_LFM }
 --    print(("MANA_UPDATE: type=%d"):format(self.lftype))
 --end
 
-local function Color(c, t) return "|cff"..c..t.."|r" end
-local function HGreen(t) return Color("80ff80", t) end
-local function HYellow(t) return Color("ffffa0", t) end
-local function Green(t) return Color("80ff80", t) end
-local function Blue(t) return Color("8080ff", t) end
-local function Red(t) return Color("ff8080", t) end
-local function White(t) return Color("ffffff", t) end
-local function WhiteParens(t) return "|cffffffff(|r"..t.."|cffffffff)|r" end
+
 
 local function toDeltaUnitsPerSecond(deltavalue, timedelta) math.floor(deltavalue / timedelta ) end
 
