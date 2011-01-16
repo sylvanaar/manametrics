@@ -243,8 +243,6 @@ function mana:takeSample(data)
     data.spi_stat, data.spi_effectiveStat, data.spi_posBuff, data.spi_negBuff = UnitStat("player", 5)
 
 
-    data.incombattime = (data.incombattime or 0) + data.timedelta
-
     data.mana, data.manamax = UnitPower("player"), UnitPowerMax("player")
 
     data.manalog = data.manalog or {}
@@ -254,7 +252,7 @@ function mana:takeSample(data)
     local deficit = data.manamax - data.mana
 
     if data.manalog[oldtime] then
-        data.manaregen = data.mana - data.manalog[oldtime] + (data.manaspent or 0)
+        data.manaregen = data.mana - (data.manalog[oldtime] + (data.manaspent or 0))
 
         if data.manalog[oldtime] == data.manamax and deficit > 0 then
             self:log(Blue("----------------------------------------------------"))
@@ -268,12 +266,13 @@ function mana:takeSample(data)
 
 
     if data.manaregen and data.manaregen > 0 then
-        self:log(data.manaregen)
-        data.managenlog[data.timestamp] = data.manaregen
+        local curr = data.managenlog[data.timestamp] or 0
+        data.managenlog[data.timestamp] = data.manaregen + curr
     end
 
     if data.manaspent and data.manaspent > 0 then
-        data.manamodlog[data.timestamp] = data.manaspent
+        local curr = data.manamodlog[data.timestamp] or 0
+        data.manamodlog[data.timestamp] = data.manaspent + curr
         data.manaspent = 0
     end
 
