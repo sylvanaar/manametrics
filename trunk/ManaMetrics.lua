@@ -123,17 +123,12 @@ mana.regenlograte = 0
 mana.lastregenlog = 0
 
 local function logregen()
-    local regen, last = 0, 0
-    for k,v in pairs(mana.db.managenlog) do
---        if k > mana.lastregenlog then
---            regen = regen + v
---            last = k > last and k or last
---        end
+    local regen = 0
+    for k,v in pairs(mana.db.regenbucket) do
         regen = regen + v
-        mana.db.managenlog[k] = nil
+        mana.db.regenbucket = nil
     end
     mana:log(FMT_REGEN:format(regen))
---    mana.lastregenlog = last
 end
 
 local function sample(self, elapsed)
@@ -143,7 +138,7 @@ local function sample(self, elapsed)
 
     if mana.samplerate <= 0 then
         mana:takeSample(mana.db, elapsed)
-        mana.samplerate = 0.25
+        mana.samplerate = 1
     end
 
 
@@ -248,7 +243,8 @@ function mana:takeSample(data)
     data.manalog = data.manalog or {}
     data.manamodlog = data.manamodlog or {}
     data.managenlog = data.managenlog or {}
-
+    data.regenbucket = data.regenbucket or {}
+    
     local deficit = data.manamax - data.mana
 
     if data.manalog[oldtime] then
@@ -268,6 +264,7 @@ function mana:takeSample(data)
     if data.manaregen and data.manaregen > 0 then
         local curr = data.managenlog[data.timestamp] or 0
         data.managenlog[data.timestamp] = data.manaregen + curr
+        data.regenbucket[data.timestamp] = data.manaregen + curr
     end
 
     if data.manaspent and data.manaspent > 0 then
@@ -278,25 +275,15 @@ function mana:takeSample(data)
 
     data.manalog[data.timestamp] = data.mana
 
-    local sma, starttime = 0, data.timestamp
-    for k,v in pairs(data.manalog) do
+    local count, sma = 0, 0
+    for k,v in pairs(data.managenlog) do
         if data.timestamp - k < 10 then
-            if starttime > k then
-                starttime = k
-            end
+            sma = sma + v
+            count = count + 1
         end
     end
-
-    if starttime ~= data.timestamp then
-        local mods = 0
-        for k,v in pairs(data.manamodlog) do
-            if k >= starttime then
-                mods = mods + v
-            end
-        end
-        sma = math.floor((data.mana - data.manalog[starttime] + mods) / (data.timestamp - starttime))
-        data.manadelta = sma
-    end
+    sma = count > 0 and math.floor(sma/count) or 0
+    data.manadelta = sma
 
     -- If this is the end of regen, ie. we are now at full mana
     if data.mana == data.manamax and data.regen ~= nil then
